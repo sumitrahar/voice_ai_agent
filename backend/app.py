@@ -7,15 +7,14 @@ import logging # For better logging
 # Configure basic logging for the app
 logging.basicConfig(level=logging.INFO)
 
-# Adjust Python path to include stt_tts_modules
-# This allows importing modules from the sibling directory 'stt_tts_modules'
-module_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'stt_tts_modules'))
-if module_path not in sys.path:
-    sys.path.append(module_path)
+# Add the parent directory to Python path so we can import stt_tts_modules
+parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if parent_dir not in sys.path:
+    sys.path.insert(0, parent_dir)
 
-# Now import from speech_to_text_whispr
+# Now import from stt_tts_modules package
 try:
-    from speech_to_text_whispr import load_stt_model, transcribe_audio_file
+    from stt_tts_modules.speech_to_text_whispr import load_stt_model, transcribe_audio_file
 except ImportError as e:
     logging.error(f"Error importing from speech_to_text_whispr: {e}", exc_info=True)
     # Define dummy functions if import fails, so app can still start and report errors via API
@@ -26,7 +25,7 @@ except ImportError as e:
 
 # Import Gemini client functions
 try:
-    from gemini_client import configure_gemini, get_gemini_response
+    from stt_tts_modules.gemini_client import configure_gemini, get_gemini_response
 except ImportError as e:
     logging.error(f"Error importing from gemini_client: {e}", exc_info=True)
     def configure_gemini():
@@ -36,7 +35,7 @@ except ImportError as e:
 
 # Import Resemble TTS client functions
 try:
-    from resemble_tts_client import configure_resemble_tts, synthesize_speech_resemble
+    from stt_tts_modules.resemble_tts_client import configure_resemble_tts, synthesize_speech_resemble
 except ImportError as e:
     # Use app.logger if app is defined, otherwise global logging
     # Assuming app logger might not be available at this global level before app init
