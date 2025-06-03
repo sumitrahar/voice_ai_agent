@@ -53,9 +53,16 @@ app = Flask(__name__, static_folder='../frontend/static')
 # Define the temporary directory for audio files within the backend directory
 TEMP_AUDIO_DIR = os.path.join(os.path.dirname(__file__), "temp_audio")
 
+# Global flag to track initialization
+_app_initialized = False
 
-@app.before_first_request
 def initialize_app():
+    """Initialize the application components"""
+    global _app_initialized
+    
+    if _app_initialized:
+        return
+    
     # Create the temporary audio directory if it doesn't exist
     # exist_ok=True prevents an error if the directory already exists
     os.makedirs(TEMP_AUDIO_DIR, exist_ok=True)
@@ -90,7 +97,13 @@ def initialize_app():
         app.logger.error(f"Resemble TTS configuration failed: {ve}", exc_info=True)
     except Exception as e:
         app.logger.error(f"Failed to configure Resemble TTS client: {e}", exc_info=True)
+    
+    _app_initialized = True
 
+@app.before_request
+def ensure_initialized():
+    """Ensure app is initialized before handling any request"""
+    initialize_app()
 
 @app.route('/')
 def index():
@@ -216,6 +229,6 @@ def synthesize_endpoint():
 if __name__ == '__main__':
     # Flask's development server.
     # For production, a WSGI server like Gunicorn or uWSGI should be used.
-    # Model loading via @app.before_first_request is suitable for dev mode.
+    # Model loading via initialization function is suitable for dev mode.
     # For production, consider loading models when worker processes start.
     app.run(debug=True, port=5000, host='0.0.0.0') # Listen on all interfaces
