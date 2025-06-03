@@ -3,6 +3,7 @@ import os
 import sys
 import uuid # For unique filenames
 import logging # For better logging
+from dotenv import load_dotenv
 
 # Configure basic logging for the app
 logging.basicConfig(level=logging.INFO)
