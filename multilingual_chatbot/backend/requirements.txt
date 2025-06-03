@@ -1,0 +1,13 @@
+Flask
+transformers
+torch
+torchaudio
+google-generativeai
+resemble-ai
+# For reproducibility, consider pinning versions, e.g.:
+# Flask>=2.0.0
+# transformers>=4.30.0
+# torch>=1.13.0
+# torchaudio>=0.13.0
+# google-generativeai>=0.5.0
+# resemble-ai>=0.2.0 # Example version, pin as needed
